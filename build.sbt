@@ -22,3 +22,11 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-testkit" % "2.5.23" % Test
   )
 }
+
+// Alpakka
+val AkkaVersion = "2.5.23"
+libraryDependencies ++= Seq(
+  "com.lightbend.akka" %% "akka-stream-alpakka-file" % "2.0.2",
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion
+)
+
