@@ -22,3 +22,9 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-testkit" % "2.5.23" % Test
   )
 }
+
+// Akka streams
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-stream" % "2.5.23",
+  "com.typesafe.akka" %% "akka-actor-typed" % "2.5.23"
+)
