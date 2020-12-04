@@ -36,16 +36,19 @@ object Main extends App {
     FileIO.fromPath(path).reduce((a, b) => a ++ b)
   })
 
-  val extractFulltextFlow:Flow[Path, String, NotUsed] = Flow[Path].flatMapConcat(path => {
+
+  val extractFulltextFlow:Flow[Path, String, NotUsed] = Flow.fromFunction((path:Path) => {
     val tika = new Tika()
-    Source.fromIterator(() => tika.parseToString(path).linesIterator)
+    tika.parseToString(path)
   })
+
 
   // val consoleSink2:Sink[String, Future[Done]] = Sink.collection
 
   val result = fileSource.via(filterFilesFlow).via(extractFulltextFlow).runWith(Sink.seq[String])
   val fresult = Await.result(result, 10 seconds)
   println(fresult.size)
+  println(fresult)
 
 /*
   val numbers = 1 to 1000
