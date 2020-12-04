@@ -1,18 +1,14 @@
-import java.nio.file.{FileSystem, FileSystems, Files, Path}
-import akka.{Done, NotUsed}
+import java.nio.file.{FileSystems, Files, Path}
+import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.actor.TypedActor.dispatcher
 import akka.stream.ActorMaterializer
 import akka.stream.alpakka.file.scaladsl.Directory
-import akka.stream.scaladsl.Sink.seq
-import akka.stream.scaladsl.{FileIO, Flow, Sink, Source}
-import akka.util.ByteString
+import akka.stream.scaladsl.{Flow, Sink, Source}
 import org.apache.tika.Tika
 import scala.language.postfixOps
 
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.Await
 
 
 
@@ -22,7 +18,7 @@ object Main extends App {
 
   val fs = FileSystems.getDefault
 
-  implicit val system = ActorSystem("Sys")
+  implicit val system: ActorSystem = ActorSystem("Sys")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   val fileSource:Source[Path, NotUsed] =
