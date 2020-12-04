@@ -39,6 +39,7 @@ object Main extends App {
 
   val extractFulltextFlow:Flow[Path, String, NotUsed] = Flow.fromFunction((path:Path) => {
     val tika = new Tika()
+    tika.setMaxStringLength(Int.MaxValue)
     tika.parseToString(path)
   })
 
@@ -46,9 +47,8 @@ object Main extends App {
   // val consoleSink2:Sink[String, Future[Done]] = Sink.collection
 
   val result = fileSource.via(filterFilesFlow).via(extractFulltextFlow).runWith(Sink.seq[String])
-  val fresult = Await.result(result, 10 seconds)
+  val fresult = Await.result(result, 30 seconds)
   println(fresult.size)
-  println(fresult)
 
 /*
   val numbers = 1 to 1000
