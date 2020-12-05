@@ -3,8 +3,9 @@ package streams
 import akka.NotUsed
 import akka.stream.{ClosedShape, Graph}
 import akka.stream.alpakka.file.scaladsl.Directory
-import akka.stream.scaladsl.{Flow, GraphDSL, Sink}
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Sink, Zip}
 import org.apache.tika.Tika
+import org.apache.tika.metadata.Metadata
 
 import java.nio.file.{FileSystems, Files, Path}
 
@@ -28,13 +29,30 @@ object ProcessingStream {
             tika.parseToString(path)
           })
         )
+        val extractMetadataFlow = builder.add(
+          Flow.fromFunction((path:Path) => {
+            val tika = new Tika()
+            var metaData = new Metadata()
+            tika.parse(path, metaData)
+            metaData
+          })
+        )
+
+        val broadcast = builder.add(Broadcast[Path](2))
+        val zipDocInfos = builder.add(Zip[String, Metadata])
 
         // sinks
-        val finalDestination = Sink.seq[String]
-        //val finalDestination = Sink.foreach(println)
+        val finalDestination = Sink.seq[(String, Metadata)]
+        // val finalDestination = Sink.foreach(println)
 
 
-        fileSource ~> fileOnlyFilterFLow ~> extractFulltextFlow ~> finalDestination
+        // Graph setup
+        fileSource ~> fileOnlyFilterFLow ~> broadcast
+        broadcast.out(0) ~> extractFulltextFlow ~> zipDocInfos.in0
+        broadcast.out(1) ~> extractMetadataFlow ~> zipDocInfos.in1
+
+
+        zipDocInfos.out ~> finalDestination
 
         ClosedShape
     }
