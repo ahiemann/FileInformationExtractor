@@ -1,14 +1,11 @@
-import java.nio.file.{FileSystems, Files, Path}
-import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.stream.alpakka.file.scaladsl.Directory
-import akka.stream.scaladsl.{Flow, Sink, Source}
-import org.apache.tika.Tika
+import akka.stream.{ActorMaterializer, ClosedShape, javadsl}
+import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source}
+import streams.ProcessingStream
+
 import scala.language.postfixOps
 
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.Await
+
 
 
 
@@ -16,25 +13,9 @@ object Main extends App {
 
   val directory = "./testdata"
 
-  val fs = FileSystems.getDefault
-
   implicit val system: ActorSystem = ActorSystem("Sys")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val fileSource:Source[Path, NotUsed] =
-    Directory
-    .ls(fs.getPath(directory))
-
-  val filterFilesFlow:Flow[Path, Path, NotUsed] = Flow[Path].filter(p => Files.isRegularFile(p))
-
-  val extractFulltextFlow:Flow[Path, String, NotUsed] = Flow.fromFunction((path:Path) => {
-    val tika = new Tika()
-    tika.setMaxStringLength(Int.MaxValue)
-    tika.parseToString(path)
-  })
-
-
-  val result = fileSource.via(filterFilesFlow).via(extractFulltextFlow).runWith(Sink.seq[String])
-  val fresult = Await.result(result, 30 seconds)
-  println(fresult.size)
+  val graph = ProcessingStream.getGraph(directory)
+  RunnableGraph.fromGraph(graph).run()
 }
