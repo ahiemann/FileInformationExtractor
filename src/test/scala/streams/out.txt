@@ -1,5 +1,5 @@
 Hallo Welt
 Das ist ein Test.
-X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252Hallo Welt
+ X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252Hallo Welt
 Das ist ein Test.
-X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252
+ X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252

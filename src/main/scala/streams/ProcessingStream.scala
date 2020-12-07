@@ -33,8 +33,8 @@ class ProcessingStream {
           Flow.fromFunction((path:Path) => {
             val tika = new Tika()
             tika.setMaxStringLength(Int.MaxValue)
-            writer.write(tika.parseToString(path))
-            writer.flush()
+            //writer.write(tika.parseToString(path))
+           // writer.flush()
             tika.parseToString(path)
           })
         )
@@ -43,9 +43,8 @@ class ProcessingStream {
             val tika = new Tika()
             val metaData = new Metadata()
             tika.parse(path, metaData)
-            writer.write(metaData + "")
-            writer.flush()
-            println(metaData + " HIER ")
+            //writer.write(metaData + "")
+            //writer.flush()
             metaData
           })
         )
@@ -55,7 +54,7 @@ class ProcessingStream {
 
         // sinks
         val finalDestination = Sink.seq[(String, Metadata)]
-        // val finalDestination = Sink.foreach(println)
+        val writeSink = Sink.foreach[(String,Metadata)]{d => writer.write(s"${d._1} ${d._2}"); writer.flush()}
 
         // Graph setup
         fileSource ~> fileOnlyFilterFLow ~> broadcast
@@ -63,7 +62,7 @@ class ProcessingStream {
         broadcast.out(0) ~> extractFulltextFlow ~> zipDocInfos.in0
         broadcast.out(1) ~> extractMetadataFlow ~> zipDocInfos.in1
 
-        zipDocInfos.out ~> finalDestination
+        zipDocInfos.out ~> writeSink
 
         ClosedShape
     }
