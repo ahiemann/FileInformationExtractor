@@ -33,8 +33,6 @@ class ProcessingStream {
           Flow.fromFunction((path:Path) => {
             val tika = new Tika()
             tika.setMaxStringLength(Int.MaxValue)
-            //writer.write(tika.parseToString(path))
-           // writer.flush()
             tika.parseToString(path)
           })
         )
@@ -43,8 +41,6 @@ class ProcessingStream {
             val tika = new Tika()
             val metaData = new Metadata()
             tika.parse(path, metaData)
-            //writer.write(metaData + "")
-            //writer.flush()
             metaData
           })
         )
