@@ -1,24 +1,31 @@
 package streams
 
+import java.io.{BufferedWriter, FileWriter}
+
 import akka.NotUsed
 import akka.stream.{ClosedShape, Graph}
 import akka.stream.alpakka.file.scaladsl.Directory
 import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Sink, Zip}
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
-
 import java.nio.file.{FileSystems, Files, Path}
 
-object ProcessingStream {
-  def getGraph(directoryPath: String): Graph[ClosedShape.type, NotUsed] = {
+
+
+
+class ProcessingStream {
+  def getGraph(directoryPathIn: String, directoryPathOut: String): Graph[ClosedShape.type, NotUsed] = {
     val fs = FileSystems.getDefault
 
     GraphDSL.create() {
       implicit builder: GraphDSL.Builder[NotUsed] =>
         import GraphDSL.Implicits._
 
+        // output file
+        val writer = new BufferedWriter(new FileWriter(directoryPathOut + "out.txt", true))
+
         // sources
-        val fileSource = builder.add(Directory.ls(fs.getPath(directoryPath)))
+        val fileSource = builder.add(Directory.ls(fs.getPath(directoryPathIn)))
 
         // flows
         val fileOnlyFilterFLow = builder.add(Flow[Path].filter(p => Files.isRegularFile(p)))
@@ -26,14 +33,19 @@ object ProcessingStream {
           Flow.fromFunction((path:Path) => {
             val tika = new Tika()
             tika.setMaxStringLength(Int.MaxValue)
+            writer.write(tika.parseToString(path))
+            writer.flush()
             tika.parseToString(path)
           })
         )
         val extractMetadataFlow = builder.add(
           Flow.fromFunction((path:Path) => {
             val tika = new Tika()
-            var metaData = new Metadata()
+            val metaData = new Metadata()
             tika.parse(path, metaData)
+            writer.write(metaData + "")
+            writer.flush()
+            println(metaData + " HIER ")
             metaData
           })
         )
@@ -45,12 +57,11 @@ object ProcessingStream {
         val finalDestination = Sink.seq[(String, Metadata)]
         // val finalDestination = Sink.foreach(println)
 
-
         // Graph setup
         fileSource ~> fileOnlyFilterFLow ~> broadcast
+
         broadcast.out(0) ~> extractFulltextFlow ~> zipDocInfos.in0
         broadcast.out(1) ~> extractMetadataFlow ~> zipDocInfos.in1
-
 
         zipDocInfos.out ~> finalDestination
 

@@ -11,11 +11,14 @@ import scala.language.postfixOps
 
 object Main extends App {
 
-  val directory = "./testdata"
+  val directoryIn = "./testdata"
+  val directoryOut = "./src/main/scala/streams/"
 
   implicit val system: ActorSystem = ActorSystem("Sys")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val graph = ProcessingStream.getGraph(directory)
+  val processingStream = new ProcessingStream
+  val graph = processingStream.getGraph(directoryIn, directoryOut)
   RunnableGraph.fromGraph(graph).run()
+
 }
