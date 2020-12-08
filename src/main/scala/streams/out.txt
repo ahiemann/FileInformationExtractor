@@ -1,0 +1,67 @@
+Hallo Welt
+Das ist ein Test.
+X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252Hallo Welt
+Das ist ein Test.
+X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252
+Andreas Hiemann, Matrikelnr. 300671 
+Pascal Ulmer, Matrikelnr. 301108 
+
+ 
+
+ 
+
+Für das Ergebnis 𝑛 ergibt sich daraus die Formel 
+
+𝑛 = 3 + 3(5 + 5(7 + 7 ∙ 9)) 
+
+Legt man für die Werte 3, 5, 7, 9 als Variablen 
+
+𝑎 = 3; 𝑏 = 5; 𝑐 = 7; 𝑑 = 9 
+
+fest, dann erhält man durch Ausmultiplizieren: 
+
+𝑛 = 𝑎 + 𝑎(𝑏 + 𝑏(𝑐 + 𝑐𝑑)) 
+
+⇔ 𝑛 = (𝑎 + 𝑎(𝑏 + 𝑏𝑐 + 𝑏𝑐𝑑) 
+
+⇔ 𝑛 = 𝑎 + 𝑎𝑏 + 𝑎𝑏𝑐 + 𝑎𝑏𝑐𝑑 
+
+Mit eingesetzten Variablenwerten: 
+
+𝑛 = 3 + 3 ∙ 5 + 3 ∙ 5 ∙ 7 + 3 ∙ 5 ∙ 7 ∙ 9 = 1068 
+
+
+date=2020-11-22T18:11:17Z pdf:unmappedUnicodeCharsPerPage=0 pdf:PDFVersion=1.7 xmp:CreatorTool=Microsoft® Word für Office 365 pdf:hasXFA=false access_permission:modify_annotations=true access_permission:can_print_degraded=true dc:creator=Andreas Hiemann language=de-DE dcterms:created=2020-11-22T18:11:17Z Last-Modified=2020-11-22T18:11:17Z dcterms:modified=2020-11-22T18:11:17Z dc:format=application/pdf; version=1.7 xmpMM:DocumentID=uuid:A1642A9E-2F29-419C-8A48-6CDF72C3B1E6 Last-Save-Date=2020-11-22T18:11:17Z pdf:docinfo:creator_tool=Microsoft® Word für Office 365 access_permission:fill_in_form=true pdf:docinfo:modified=2020-11-22T18:11:17Z meta:save-date=2020-11-22T18:11:17Z pdf:encrypted=false xmp:CreateDate=2020-11-22T19:11:17Z modified=2020-11-22T18:11:17Z Content-Length=105894 pdf:hasMarkedContent=true Content-Type=application/pdf xmp:ModifyDate=2020-11-22T19:11:17Z pdf:docinfo:creator=Andreas Hiemann X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.pdf.PDFParser creator=Andreas Hiemann dc:language=de-DE meta:author=Andreas Hiemann pdf:producer=Microsoft® Word für Office 365 meta:creation-date=2020-11-22T18:11:17Z created=2020-11-22T18:11:17Z access_permission:extract_for_accessibility=true access_permission:assemble_document=true xmpTPg:NPages=1 Creation-Date=2020-11-22T18:11:17Z resourceName=DiMa.pdf pdf:hasXMP=true pdf:charsPerPage=359 access_permission:extract_content=true access_permission:can_print=true Author=Andreas Hiemann producer=Microsoft® Word für Office 365 access_permission:can_modify=true pdf:docinfo:producer=Microsoft® Word für Office 365 pdf:docinfo:created=2020-11-22T18:11:17ZHallo Welt
+Das ist ein Test.
+X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252
+Andreas Hiemann, Matrikelnr. 300671 
+Pascal Ulmer, Matrikelnr. 301108 
+
+ 
+
+ 
+
+Für das Ergebnis 𝑛 ergibt sich daraus die Formel 
+
+𝑛 = 3 + 3(5 + 5(7 + 7 ∙ 9)) 
+
+Legt man für die Werte 3, 5, 7, 9 als Variablen 
+
+𝑎 = 3; 𝑏 = 5; 𝑐 = 7; 𝑑 = 9 
+
+fest, dann erhält man durch Ausmultiplizieren: 
+
+𝑛 = 𝑎 + 𝑎(𝑏 + 𝑏(𝑐 + 𝑐𝑑)) 
+
+⇔ 𝑛 = (𝑎 + 𝑎(𝑏 + 𝑏𝑐 + 𝑏𝑐𝑑) 
+
+⇔ 𝑛 = 𝑎 + 𝑎𝑏 + 𝑎𝑏𝑐 + 𝑎𝑏𝑐𝑑 
+
+Mit eingesetzten Variablenwerten: 
+
+𝑛 = 3 + 3 ∙ 5 + 3 ∙ 5 ∙ 7 + 3 ∙ 5 ∙ 7 ∙ 9 = 1068 
+
+
+ date=2020-11-22T18:11:17Z pdf:unmappedUnicodeCharsPerPage=0 pdf:PDFVersion=1.7 xmp:CreatorTool=Microsoft® Word für Office 365 pdf:hasXFA=false access_permission:modify_annotations=true access_permission:can_print_degraded=true dc:creator=Andreas Hiemann language=de-DE dcterms:created=2020-11-22T18:11:17Z Last-Modified=2020-11-22T18:11:17Z dcterms:modified=2020-11-22T18:11:17Z dc:format=application/pdf; version=1.7 xmpMM:DocumentID=uuid:A1642A9E-2F29-419C-8A48-6CDF72C3B1E6 Last-Save-Date=2020-11-22T18:11:17Z pdf:docinfo:creator_tool=Microsoft® Word für Office 365 access_permission:fill_in_form=true pdf:docinfo:modified=2020-11-22T18:11:17Z meta:save-date=2020-11-22T18:11:17Z pdf:encrypted=false xmp:CreateDate=2020-11-22T19:11:17Z modified=2020-11-22T18:11:17Z Content-Length=105894 pdf:hasMarkedContent=true Content-Type=application/pdf xmp:ModifyDate=2020-11-22T19:11:17Z pdf:docinfo:creator=Andreas Hiemann X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.pdf.PDFParser creator=Andreas Hiemann dc:language=de-DE meta:author=Andreas Hiemann pdf:producer=Microsoft® Word für Office 365 meta:creation-date=2020-11-22T18:11:17Z created=2020-11-22T18:11:17Z access_permission:extract_for_accessibility=true access_permission:assemble_document=true xmpTPg:NPages=1 Creation-Date=2020-11-22T18:11:17Z resourceName=DiMa.pdf pdf:hasXMP=true pdf:charsPerPage=359 access_permission:extract_content=true access_permission:can_print=true Author=Andreas Hiemann producer=Microsoft® Word für Office 365 access_permission:can_modify=true pdf:docinfo:producer=Microsoft® Word für Office 365 pdf:docinfo:created=2020-11-22T18:11:17ZHallo Welt
+Das ist ein Test.
+ X-Parsed-By=org.apache.tika.parser.DefaultParser X-Parsed-By=org.apache.tika.parser.csv.TextAndCSVParser Content-Encoding=windows-1252 resourceName=in.txt Content-Length=29 Content-Type=text/plain; charset=windows-1252
