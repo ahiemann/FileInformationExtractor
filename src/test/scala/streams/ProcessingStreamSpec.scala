@@ -16,7 +16,6 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
     implicit val system: ActorSystem = ActorSystem("Sys")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-    val processingStream = new ProcessingStream
     val directoryIn = "./testdata"
     val directoryOut = "./src/test/scala/streams/"
 
@@ -24,7 +23,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
 
       "extract text and metadata from files which placed in given directory" in {
 
-        val graph = processingStream.getGraph(directoryIn, directoryOut)
+        val graph = ProcessingStream.getGraph(directoryIn, directoryOut)
         RunnableGraph.fromGraph(graph).run()
 
         Thread.sleep(5000)
@@ -37,7 +36,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
       }
 
       "return a graph with Closed Shape and NotUsed" in {
-        val graph = processingStream.getGraph(directoryIn, directoryOut)
+        val graph = ProcessingStream.getGraph(directoryIn, directoryOut)
         RunnableGraph.fromGraph(graph).run()
 
         graph mustBe a [Graph[ClosedShape.type, NotUsed]]

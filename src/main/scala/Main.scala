@@ -17,8 +17,7 @@ object Main extends App {
   implicit val system: ActorSystem = ActorSystem("Sys")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val processingStream = new ProcessingStream
-  val graph = processingStream.getGraph(directoryIn, directoryOut)
+  val graph = ProcessingStream.getGraph(directoryIn, directoryOut)
   RunnableGraph.fromGraph(graph).run()
 
 }

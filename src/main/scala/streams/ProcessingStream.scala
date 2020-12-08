@@ -13,7 +13,7 @@ import java.nio.file.{FileSystems, Files, Path}
 
 
 
-class ProcessingStream {
+object ProcessingStream {
   def getGraph(directoryPathIn: String, directoryPathOut: String): Graph[ClosedShape.type, NotUsed] = {
     val fs = FileSystems.getDefault
 
