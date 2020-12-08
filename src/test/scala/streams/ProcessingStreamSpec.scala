@@ -18,12 +18,12 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
 
     val directoryIn = "./testdata"
     val directoryOut = "./src/test/scala/streams/"
+    val processingStream = new ProcessingStream(directoryIn, directoryOut)
 
     "The ProcessingStream" should {
-
       "extract text and metadata from files which placed in given directory" in {
 
-        val graph = ProcessingStream.getGraph(directoryIn, directoryOut)
+        val graph = processingStream.getGraph(directoryIn, directoryOut)
         RunnableGraph.fromGraph(graph).run()
 
         Thread.sleep(5000)
@@ -36,7 +36,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
       }
 
       "return a graph with Closed Shape and NotUsed" in {
-        val graph = ProcessingStream.getGraph(directoryIn, directoryOut)
+        val graph = processingStream.getGraph(directoryIn, directoryOut)
         RunnableGraph.fromGraph(graph).run()
 
         graph mustBe a [Graph[ClosedShape.type, NotUsed]]
