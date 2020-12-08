@@ -3,10 +3,12 @@ package streams
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, Graph}
-import akka.stream.scaladsl.{RunnableGraph}
+import akka.stream.scaladsl.RunnableGraph
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
+import java.nio.file.{Files, Paths}
 
 
 class ProcessingStreamSpec extends AnyWordSpec with Matchers {
@@ -27,12 +29,11 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
 
         Thread.sleep(5000)
 
-        val ipfileStream = getClass.getResourceAsStream("./out.txt")
-        val readlines = scala.io.Source.fromInputStream(ipfileStream).getLines().mkString
+        val firstLine = Files.lines(Paths.get("./src/test/scala/streams/out.txt")).findFirst().get()
 
         Thread.sleep(5000)
 
-        readlines should startWith ("Hallo")
+        firstLine should startWith ("Hallo")
       }
 
       "return a graph with Closed Shape and NotUsed" in {
