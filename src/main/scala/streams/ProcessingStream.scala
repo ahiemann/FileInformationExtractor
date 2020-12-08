@@ -1,14 +1,15 @@
 package streams
 
 import java.io.{BufferedWriter, FileWriter}
-
 import akka.NotUsed
 import akka.stream.{ClosedShape, Graph}
 import akka.stream.alpakka.file.scaladsl.Directory
 import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Sink, Zip}
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
-import java.nio.file.{FileSystems, Files, Path}
+
+import java.nio.charset.Charset
+import java.nio.file.{FileSystems, Files, OpenOption, Path, Paths, StandardOpenOption}
 
 
 
@@ -22,7 +23,7 @@ object ProcessingStream {
         import GraphDSL.Implicits._
 
         // output file
-        val writer = new BufferedWriter(new FileWriter(directoryPathOut + "out.txt", true))
+        val outputFilePath = Paths.get(s"$directoryPathOut/out.txt")
 
         // sources
         val fileSource = builder.add(Directory.ls(fs.getPath(directoryPathIn)))
@@ -50,7 +51,9 @@ object ProcessingStream {
 
         // sinks
         val finalDestination = Sink.seq[(String, Metadata)]
-        val writeSink = Sink.foreach[(String,Metadata)]{d => writer.write(s"${d._1} ${d._2}"); writer.flush()}
+        val writeSink = Sink.foreach[(String,Metadata)] {
+          d => Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
+        }
 
         // Graph setup
         fileSource ~> fileOnlyFilterFLow ~> broadcast
