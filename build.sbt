@@ -32,3 +32,5 @@ libraryDependencies ++= Seq(
   // "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
 )
 
+// Kafka
+libraryDependencies += "org.apache.kafka" %% "kafka" % "2.6.0"
