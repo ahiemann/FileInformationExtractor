@@ -1,12 +1,16 @@
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, javadsl}
 import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source}
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.clients.producer.KafkaProducer
+import org.apache.tika.metadata.Metadata
 import streams.ProcessingStream
 
+import java.time.Duration
+import java.util.Properties
+import java.util
+import scala.jdk.CollectionConverters.IterableHasAsScala
 import scala.language.postfixOps
-
-
-
 
 
 object Main extends App {
@@ -21,4 +25,24 @@ object Main extends App {
   val graph = processingStream.getGraph(directoryIn, directoryOut)
   RunnableGraph.fromGraph(graph).run()
 
+  // Kafka
+  // TODO: Here and in ProcessingStream.scala: Allow value of type (String, Metadata) and not only String. Therefore a "value.deserializer" resp. "value.serializer" for this type has to be provided?!
+  val props = new Properties()
+  props.put("bootstrap.servers", "localhost:9092")
+  props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+  props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+  props.put("group.id", "something") // TODO: Something better than "something"?
+
+  val consumer = new KafkaConsumer[String, String](props)
+  val TOPIC = "test"
+
+  consumer.subscribe(util.Collections.singletonList(TOPIC))
+
+  while(true) {
+    println("Polling...")
+    val records = consumer.poll(Duration.ofMillis(100))
+    for (record <- records.asScala) {
+      println(record)
+    }
+  }
 }

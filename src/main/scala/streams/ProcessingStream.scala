@@ -4,11 +4,13 @@ import akka.{Done, NotUsed}
 import akka.stream.{ClosedShape, Graph}
 import akka.stream.alpakka.file.scaladsl.Directory
 import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Sink, Source, Zip}
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
 
 import java.nio.charset.Charset
 import java.nio.file.{FileSystem, FileSystems, Files, Path, Paths, StandardOpenOption}
+import java.util.Properties
 import scala.concurrent.Future
 
 
@@ -17,6 +19,17 @@ import scala.concurrent.Future
 class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) {
   private val fs: FileSystem = FileSystems.getDefault
 
+  // Kafka definitions
+  val props = new Properties()
+  props.put("bootstrap.servers", "localhost:9092")
+  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+
+  val producer = new KafkaProducer[String, String](props)
+  val TOPIC = "test"
+  val KEY = "message"
+
+  // Akka Streams definitions
   // sources
   def fileSource:Source[Path, NotUsed] = Directory.ls(fs.getPath(directoryPathIn))
 
@@ -39,7 +52,12 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
   // sinks
   def fileSink: Sink[(String, Metadata), Future[Done]] = Sink.foreach[(String,Metadata)] {
     val outputFilePath = Paths.get(s"$directoryPathOut/out.txt")
-    d => Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
+    d =>
+      println("Write to file...")
+      Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
+      val record = new ProducerRecord(TOPIC, KEY, d._1)
+      println("Sending...")
+      producer.send(record)
   }
 
   def getGraph(directoryPathIn: String, directoryPathOut: String): Graph[ClosedShape.type, NotUsed] = {
