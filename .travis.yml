@@ -15,7 +15,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose -f ./kafka/zk-single-kafka-single.yml up
+  - docker-compose -f ./kafka/zk-single-kafka-single.yml up -d
   - sbt clean coverage test coverageReport
 
 after_success:
