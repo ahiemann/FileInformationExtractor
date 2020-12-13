@@ -20,18 +20,12 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
   private val fs: FileSystem = FileSystems.getDefault
 
   // Kafka definitions
-  val propsText = new Properties()
-  propsText.put("bootstrap.servers", "localhost:9092")
-  propsText.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  propsText.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  val props = new Properties()
+  props.put("bootstrap.servers", "localhost:9092")
+  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  props.put("value.serializer", "kafka.MySerializer")
 
-  val propsMeta = new Properties()
-  propsMeta.put("bootstrap.servers", "localhost:9092")
-  propsMeta.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  propsMeta.put("value.serializer", "kafka.MySerializer")
-
-  val producerText = new KafkaProducer[String, String](propsText)
-  val producerMeta = new KafkaProducer[String, Metadata](propsMeta)
+  val producer = new KafkaProducer[String, (String,Metadata)](props)
   val TOPIC = "extraction"
   val KEY = "data"
 
@@ -61,11 +55,9 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
     d =>
       println("Write to file...")
       Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
-      val recordText = new ProducerRecord[String, String](TOPIC, KEY, d._1)
-      val recordMeta = new ProducerRecord[String, Metadata](TOPIC, KEY, d._2)
+      val recordMeta = new ProducerRecord[String, (String,Metadata)](TOPIC, KEY, d)
       println("Sending...")
-      producerText.send(recordText)
-      producerMeta.send(recordMeta)
+      producer.send(recordMeta)
   }
 
 

@@ -7,11 +7,11 @@ import java.util
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.tika.metadata.Metadata
 
-class MySerializer extends Serializer[Metadata] {
+class MySerializer extends Serializer[(String,Metadata)] {
 
   override def configure(configs: util.Map[String, _], isKey: Boolean): Unit = { }
 
-  override def serialize(topic: String, data: Metadata): Array[Byte] = {
+  override def serialize(topic: String, data: (String,Metadata)): Array[Byte] = {
     try {
       val byteOut = new ByteArrayOutputStream()
       val objOut = new ObjectOutputStream(byteOut)

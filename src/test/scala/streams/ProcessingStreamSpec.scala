@@ -10,11 +10,10 @@ import org.scalatest.matchers.should.Matchers
 import java.nio.file.{Files, Paths}
 import java.util.Properties
 
-import net.manub.embeddedkafka.EmbeddedKafka
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 
-class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka {
+class ProcessingStreamSpec extends AnyWordSpec with Matchers {
 
     implicit val system: ActorSystem = ActorSystem("Sys")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -46,21 +45,6 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
       }
 
       "test" in {
-        withRunningKafka{
-
-          // Kafka definitions
-          val props = new Properties()
-          props.put("bootstrap.servers", "localhost:9092")
-          props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-          props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-          props.put("value.serializer", "kafka.UserSerializer")
-
-
-
-          println("Sending...")
-
-
-        }
-      }
+             }
     }
 }
