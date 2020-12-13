@@ -4,16 +4,19 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, Graph}
 import akka.stream.scaladsl.RunnableGraph
+import kafka.{MyDeserializer, MySerializer}
+import net.manub.embeddedkafka.EmbeddedKafka
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
 import java.nio.file.{Files, Paths}
 import java.util.Properties
-
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.tika.metadata.Metadata
 
 
-class ProcessingStreamSpec extends AnyWordSpec with Matchers {
+class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka {
 
     implicit val system: ActorSystem = ActorSystem("Sys")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -44,7 +47,16 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
         graph mustBe a [Graph[ClosedShape.type, NotUsed]]
       }
 
-      "test" in {
-             }
+      "work with kafka" in {
+        withRunningKafka {
+          implicit val serializer: MySerializer = new MySerializer
+          implicit val deserializer: MyDeserializer = new MyDeserializer
+
+          val TOPIC = "extraction"
+          createCustomTopic(TOPIC)
+          publishToKafka[(String, Metadata)](TOPIC, ("This is a test", new Metadata()))
+          consumeFirstMessageFrom[(String, Metadata)](TOPIC)._1 shouldBe "This is a test"
+        }
+      }
     }
 }

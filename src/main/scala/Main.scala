@@ -9,7 +9,7 @@ import streams.ProcessingStream
 import java.time.Duration
 import java.util.Properties
 import java.util
-import scala.jdk.CollectionConverters.IterableHasAsScala
+import scala.jdk.CollectionConverters.iterableAsScalaIterableConverter
 import scala.language.postfixOps
 
 
@@ -32,7 +32,7 @@ object Main extends App {
   props.put("value.deserializer", "kafka.MyDeserializer")
   props.put("group.id", "something")
 
-  val consumer = new KafkaConsumer[String, String](props)
+  val consumer = new KafkaConsumer[String, (String, Metadata)](props)
   val TOPIC = "extraction"
 
   consumer.subscribe(util.Collections.singletonList(TOPIC))
