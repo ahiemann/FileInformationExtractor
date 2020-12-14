@@ -7,7 +7,7 @@ import java.util
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.tika.metadata.Metadata
 
-class MySerializer extends Serializer[(String,Metadata)] {
+class DocInformationSerializer extends Serializer[(String,Metadata)] {
 
   override def configure(configs: util.Map[String, _], isKey: Boolean): Unit = { }
 

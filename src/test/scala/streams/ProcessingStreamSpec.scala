@@ -4,7 +4,7 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, Graph}
 import akka.stream.scaladsl.RunnableGraph
-import kafka.{MyDeserializer, MySerializer}
+import kafka.{DocInformationDeserializer, DocInformationSerializer}
 import net.manub.embeddedkafka.EmbeddedKafka
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.wordspec.AnyWordSpec
@@ -49,8 +49,8 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
 
       "work with kafka" in {
         withRunningKafka {
-          implicit val serializer: MySerializer = new MySerializer
-          implicit val deserializer: MyDeserializer = new MyDeserializer
+          implicit val serializer: DocInformationSerializer = new DocInformationSerializer
+          implicit val deserializer: DocInformationDeserializer = new DocInformationDeserializer
 
           val TOPIC = "extraction"
           createCustomTopic(TOPIC)

@@ -23,7 +23,7 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
   val props = new Properties()
   props.put("bootstrap.servers", "localhost:9092")
   props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "kafka.MySerializer")
+  props.put("value.serializer", "kafka.DocInformationSerializer")
 
   val producer = new KafkaProducer[String, (String,Metadata)](props)
   val TOPIC = "extraction"
