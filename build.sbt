@@ -37,3 +37,5 @@ libraryDependencies += "org.apache.kafka" %% "kafka" % "2.6.0"
 // Embedded Kafka for testing
 libraryDependencies += "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test"
 
+// Embedded Kafka for testing
+libraryDependencies += "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test"
