@@ -8,12 +8,18 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import java.nio.file.{Files, Paths}
+import java.time.Duration
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import kafka.{DocInformationsDeserializer, DocInformationsSerializer}
+import net.manub.embeddedkafka.EmbeddedKafka
+import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.tika.metadata.Metadata
+
+import scala.jdk.CollectionConverters.iterableAsScalaIterableConverter
 
 
-class ProcessingStreamSpec extends AnyWordSpec with Matchers {
+class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka {
 
     implicit val system: ActorSystem = ActorSystem("Sys")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -44,7 +50,27 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers {
         graph mustBe a [Graph[ClosedShape.type, NotUsed]]
       }
 
-      "test" in {
-             }
+      "work with kafka" in {
+        withRunningKafka {
+          implicit val serializer: DocInformationsSerializer = new DocInformationsSerializer
+          implicit val deserializer: DocInformationsDeserializer = new DocInformationsDeserializer
+
+          val TOPIC = "extraction"
+          createCustomTopic(TOPIC)
+          publishToKafka[(String, Metadata)](TOPIC, ("This is a test", new Metadata()))
+          consumeFirstMessageFrom[(String, Metadata)](TOPIC)._1 shouldBe "This is a test"
+        }
+      }
+
+      "Consumer records should be 0 if we give an empty tuple" in {
+        val p = new Producer
+        val pTuple = ("",new Metadata())
+        val recordMeta = new ProducerRecord[String, (String,Metadata)](p.TOPIC, p.KEY, pTuple)
+        p.producer.send(recordMeta)
+        val c = new Consumer
+        val records = c.consumer.poll(Duration.ofMillis(100))
+
+        records.count() should be (0)
+      }
     }
 }

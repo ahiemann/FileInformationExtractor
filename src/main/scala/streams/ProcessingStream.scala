@@ -20,14 +20,7 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
   private val fs: FileSystem = FileSystems.getDefault
 
   // Kafka definitions
-  val props = new Properties()
-  props.put("bootstrap.servers", "localhost:9092")
-  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "kafka.MySerializer")
-
-  val producer = new KafkaProducer[String, (String,Metadata)](props)
-  val TOPIC = "extraction"
-  val KEY = "data"
+  val producer = new Producer()
 
   // Akka Streams definitions
   // sources
@@ -55,9 +48,9 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
     d =>
       println("Write to file...")
       Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
-      val recordMeta = new ProducerRecord[String, (String,Metadata)](TOPIC, KEY, d)
+      val recordMeta = new ProducerRecord[String, (String,Metadata)](producer.TOPIC, producer.KEY, d)
       println("Sending...")
-      producer.send(recordMeta)
+      producer.producer.send(recordMeta)
   }
 
 

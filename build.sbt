@@ -2,7 +2,7 @@ name := "FileInformationExtractor"
 
 version := "0.1"
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.12.10"
 
 // Apache Tika related libraries
 // https://mvnrepository.com/artifact/org.apache.tika/tika-parsers
@@ -34,4 +34,6 @@ libraryDependencies ++= Seq(
 
 // Kafka
 libraryDependencies += "org.apache.kafka" %% "kafka" % "2.6.0"
+// Embedded Kafka for testing
+libraryDependencies += "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test"
 
