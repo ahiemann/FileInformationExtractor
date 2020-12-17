@@ -39,3 +39,9 @@ libraryDependencies += "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "te
 
 // Embedded Kafka for testing
 libraryDependencies += "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test"
+
+// Spark
+libraryDependencies += "org.apache.spark" % "spark-core_2.12" % "3.0.1"
+libraryDependencies += "org.apache.spark" % "spark-streaming_2.12" % "3.0.1" % "provided"
+libraryDependencies += "org.apache.spark" % "spark-streaming-kafka-0-10_2.12" % "3.0.1"
+libraryDependencies += "org.apache.spark" % "spark-sql_2.12" % "3.0.1"
