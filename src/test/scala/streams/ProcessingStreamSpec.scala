@@ -16,8 +16,6 @@ import net.manub.embeddedkafka.EmbeddedKafka
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.tika.metadata.Metadata
 
-import scala.jdk.CollectionConverters.iterableAsScalaIterableConverter
-
 
 class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka {
 
