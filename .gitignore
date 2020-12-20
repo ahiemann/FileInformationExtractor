@@ -3,7 +3,7 @@
 .idea
 .bsp
 /target
-
+.gradle
 
 # sbt
 .cache
@@ -21,3 +21,7 @@ project/.sbtserver
 
 # kafka container data
 kafka/zk-single-kafka-single/*
+
+# application data
+src/main/scala/streams/out.txt
+src/test/scala/streams/out.txt
