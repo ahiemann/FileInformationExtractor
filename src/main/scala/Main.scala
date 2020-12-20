@@ -95,6 +95,30 @@ object Main extends App {
 
       val completeDataFrame = spark.sql("select * from DocInformationDataFrame")
       completeDataFrame.show()
+
+      val texts = rdd.collect().map {case (text, resourceName, author, date, format) => text}
+      val resourceNames = rdd.collect().map {case (text, resourceName, author, date, format) => resourceName}
+      val authors = rdd.collect().map {case (text, resourceName, author, date, format) => author}
+      val dates = rdd.collect().map {case (text, resourceName, author, date, format) => date}
+      val formats = rdd.collect().map {case (text, resourceName, author, date, format) => format}
+
+      val dataAnalytics = new DataAnalytics
+
+      val countedAuthors = dataAnalytics.countDifferentAuthors(sc.sparkContext, authors)
+      println("Different authors: " + countedAuthors)
+
+      val countedWords = dataAnalytics.countWords(sc.sparkContext, texts)
+      println("Different words: " + countedWords)
+
+      val countedDates = dataAnalytics.countDates(sc.sparkContext, texts)
+      println("Different dates: " + countedDates)
+
+      val countedFormates = dataAnalytics.countFormats(sc.sparkContext, texts)
+      println("Different formates: " + countedFormates)
+
+      val countedResNames = dataAnalytics.countResNames(sc.sparkContext, texts)
+      println("Different resource names: " + countedResNames)
+
     }
     //spark.stop()
   }
