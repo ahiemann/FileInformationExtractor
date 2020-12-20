@@ -13,7 +13,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.tika.metadata.Metadata
 import streams.{Consumer, ProcessingStream}
 
-import java.time.Duration
+import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
+import java.time.{Duration, LocalDateTime, OffsetDateTime}
 import scala.collection.JavaConverters.{asJavaCollection, iterableAsScalaIterableConverter, mapAsJavaMapConverter}
 import scala.language.postfixOps
 
@@ -80,13 +81,14 @@ object Main extends App {
   dataStream.foreachRDD { rdd =>
     val spark = SparkSession.builder.config(rdd.sparkContext.getConf).getOrCreate()
     import spark.implicits._
-    // implicit val myObjEncoder = org.apache.spark.sql.Encoders.kryo[Metadata]
 
     if (rdd.isEmpty()) {
       println("Keine neuen Daten")
     }
     else {
+
       println("neue Daten")
+      /*
       val df = rdd.toDF()
       df.createOrReplaceTempView("DocInformationDataFrame")
 
@@ -96,14 +98,59 @@ object Main extends App {
       val completeDataFrame = spark.sql("select * from DocInformationDataFrame")
       completeDataFrame.show()
 
-      val texts = rdd.collect().map {case (text, resourceName, author, date, format) => text}
+      val textsDF = spark.sql("select _1 as text from DocInformationDataFrame")
+      */
+      // TODO: Count of the most frequent words in extracted texts
+
+      val docNameCount = rdd.map(record => { (record._2, 1) }).reduceByKey((a, b) => { a + b })
+      println("Stats about document names:")
+      docNameCount.foreach(println)
+
+      val docAuthorCount = rdd.map(record => { (record._3, 1) }).reduceByKey((a, b) => { a + b })
+      println("Stats about document authors:")
+      docAuthorCount.foreach(println)
+
+      val docYearCount = rdd.map(record => {
+        if (record._4 != null) {
+          // inspired by https://stackoverflow.com/a/46488425
+          val dateTimeFormatter = new DateTimeFormatterBuilder()
+            // date/time
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            // offset (hh:mm - "+00:00" when it's zero)
+            .optionalStart().appendOffset("+HH:MM", "+00:00").optionalEnd()
+            // offset (hhmm - "+0000" when it's zero)
+            .optionalStart().appendOffset("+HHMM", "+0000").optionalEnd()
+            // offset (hh - "Z" when it's zero)
+            .optionalStart().appendOffset("+HH", "Z").optionalEnd()
+            .toFormatter();
+
+          val date = OffsetDateTime.parse(record._4, dateTimeFormatter)
+          (date.getYear, 1)
+        }
+        else {
+          // placeholder for "no date could be extracted"...
+          (0, 1)
+        }
+      }
+      ).reduceByKey((a, b) => { a + b })
+      println("Stats about document creation years:")
+      docYearCount.foreach(println)
+
+      val docTypeCount = rdd.map(record => { (record._5, 1) }).reduceByKey((a, b) => { a + b })
+      println("Stats about document types:")
+      docTypeCount.foreach(println)
+
+      /*
+      val texts = textsDF.rdd.collect()
+      //val texts = rdd.collect().map {case (text, resourceName, author, date, format) => text}
       val resourceNames = rdd.collect().map {case (text, resourceName, author, date, format) => resourceName}
       val authors = rdd.collect().map {case (text, resourceName, author, date, format) => author}
       val dates = rdd.collect().map {case (text, resourceName, author, date, format) => date}
       val formats = rdd.collect().map {case (text, resourceName, author, date, format) => format}
 
       val dataAnalytics = new DataAnalytics
-
+*/
+      /*
       val countedAuthors = dataAnalytics.countDifferentAuthors(sc.sparkContext, authors)
       println("Different authors: " + countedAuthors)
 
@@ -118,16 +165,11 @@ object Main extends App {
 
       val countedResNames = dataAnalytics.countResNames(sc.sparkContext, texts)
       println("Different resource names: " + countedResNames)
-
+*/
     }
     //spark.stop()
   }
-  // stream.foreachRDD(rdd => println( rdd.name))
 
   sc.start()
   sc.awaitTermination()
-
-
-
-
 }
