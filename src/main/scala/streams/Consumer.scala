@@ -10,7 +10,7 @@ class Consumer {
   val props = new Properties()
   props.put("bootstrap.servers", "localhost:9092")
   props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-  props.put("value.deserializer", "kafka.DocInformationsDeserializer")
+  props.put("value.deserializer", "kafka.DocInformationDeserializer")
   props.put("group.id", "something")
 
   val consumer = new KafkaConsumer[String, (String,Metadata)](props)

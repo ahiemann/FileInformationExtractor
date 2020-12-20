@@ -11,7 +11,7 @@ import java.nio.file.{Files, Paths}
 import java.time.Duration
 import java.util.Properties
 
-import kafka.{DocInformationsDeserializer, DocInformationsSerializer}
+import kafka.{DocInformationDeserializer, DocInformationSerializer}
 import net.manub.embeddedkafka.EmbeddedKafka
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.tika.metadata.Metadata
@@ -50,8 +50,8 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
 
       "work with kafka" in {
         withRunningKafka {
-          implicit val serializer: DocInformationsSerializer = new DocInformationsSerializer
-          implicit val deserializer: DocInformationsDeserializer = new DocInformationsDeserializer
+          implicit val serializer: DocInformationSerializer = new DocInformationSerializer
+          implicit val deserializer: DocInformationDeserializer = new DocInformationDeserializer
 
           val TOPIC = "extraction"
           createCustomTopic(TOPIC)

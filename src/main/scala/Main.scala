@@ -1,7 +1,7 @@
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, javadsl}
 import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source}
-import kafka.DocInformationsDeserializer
+import kafka.DocInformationDeserializer
 import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.common.TopicPartition
@@ -41,7 +41,7 @@ object Main extends App {
   val kafkaParams = Map[String, Object](
     "bootstrap.servers" -> "localhost:9092",
     "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
-    "value.deserializer" -> "kafka.DocInformationsDeserializer",
+    "value.deserializer" -> "kafka.DocInformationDeserializer",
     "group.id" -> "something",
     "auto.offset.reset" -> "latest",
     "enable.auto.commit" -> (false: java.lang.Boolean)
