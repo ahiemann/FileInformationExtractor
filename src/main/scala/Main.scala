@@ -82,13 +82,9 @@ object Main extends App {
     val spark = SparkSession.builder.config(rdd.sparkContext.getConf).getOrCreate()
     import spark.implicits._
 
-    if (rdd.isEmpty()) {
-      println("Keine neuen Daten")
-    }
-    else {
-
+    if (! rdd.isEmpty()) {
       println("neue Daten")
-      /*
+
       val df = rdd.toDF()
       df.createOrReplaceTempView("DocInformationDataFrame")
 
@@ -98,9 +94,18 @@ object Main extends App {
       val completeDataFrame = spark.sql("select * from DocInformationDataFrame")
       completeDataFrame.show()
 
-      val textsDF = spark.sql("select _1 as text from DocInformationDataFrame")
-      */
+
       // TODO: Count of the most frequent words in extracted texts
+      val wordCounts = rdd.map(record => {
+        val words = record._1.split("[ \n]")
+        sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).collect()
+      })
+      //wordCounts.foreach(f => f.foreach(println))
+      wordCounts.foreach(list => list.foreach(println))
+      val sorted = wordCounts.first().sortBy(_._2)
+      println("Occurences of words in text")
+      sorted.foreach(println)
+
 
       val docNameCount = rdd.map(record => { (record._2, 1) }).reduceByKey((a, b) => { a + b })
       println("Stats about document names:")
@@ -140,32 +145,6 @@ object Main extends App {
       println("Stats about document types:")
       docTypeCount.foreach(println)
 
-      /*
-      val texts = textsDF.rdd.collect()
-      //val texts = rdd.collect().map {case (text, resourceName, author, date, format) => text}
-      val resourceNames = rdd.collect().map {case (text, resourceName, author, date, format) => resourceName}
-      val authors = rdd.collect().map {case (text, resourceName, author, date, format) => author}
-      val dates = rdd.collect().map {case (text, resourceName, author, date, format) => date}
-      val formats = rdd.collect().map {case (text, resourceName, author, date, format) => format}
-
-      val dataAnalytics = new DataAnalytics
-*/
-      /*
-      val countedAuthors = dataAnalytics.countDifferentAuthors(sc.sparkContext, authors)
-      println("Different authors: " + countedAuthors)
-
-      val countedWords = dataAnalytics.countWords(sc.sparkContext, texts)
-      println("Different words: " + countedWords)
-
-      val countedDates = dataAnalytics.countDates(sc.sparkContext, texts)
-      println("Different dates: " + countedDates)
-
-      val countedFormates = dataAnalytics.countFormats(sc.sparkContext, texts)
-      println("Different formates: " + countedFormates)
-
-      val countedResNames = dataAnalytics.countResNames(sc.sparkContext, texts)
-      println("Different resource names: " + countedResNames)
-*/
     }
     //spark.stop()
   }
