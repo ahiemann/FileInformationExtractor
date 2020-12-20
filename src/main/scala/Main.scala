@@ -2,6 +2,8 @@ import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, ClosedShape, javadsl}
 import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source}
 import kafka.DocInformationsDeserializer
+import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
+import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
@@ -15,12 +17,12 @@ import streams.{Consumer, ProcessingStream}
 
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.time.{Duration, LocalDateTime, OffsetDateTime}
+import java.util.{Collections, Properties}
 import scala.collection.JavaConverters.{asJavaCollection, iterableAsScalaIterableConverter, mapAsJavaMapConverter}
 import scala.language.postfixOps
 
 
 object Main extends App {
-
   val directoryIn = "./testdata"
   val directoryOut = "./src/main/scala/streams/"
 
@@ -31,39 +33,21 @@ object Main extends App {
   val graph = processingStream.getGraph(directoryIn, directoryOut)
   RunnableGraph.fromGraph(graph).run()
 
-  // Kafka
-  /*
-  var consumer = new Consumer()
-
-
-  while(true) {
-    println("Polling...")
-    val records = consumer.consumer.poll(Duration.ofMillis(100))
-    for (record <- records.asScala) {
-      println(record)
-    }
-  }*/
-
-   // Spark
-   val sparkConfig = new SparkConf().setMaster("local[*]").setAppName("FileInformationStream")
-   val sc = new StreamingContext(sparkConfig, Seconds(1))
-    sc.sparkContext.setLogLevel("ERROR")
-
-
+  // Spark
+  val sparkConfig = new SparkConf().setMaster("local[*]").setAppName("FileInformationStream")
+  val sc = new StreamingContext(sparkConfig, Seconds(1))
+  sc.sparkContext.setLogLevel("ERROR")
 
   val kafkaParams = Map[String, Object](
     "bootstrap.servers" -> "localhost:9092",
-    "key.deserializer" -> classOf[StringDeserializer],
-    "value.deserializer" -> classOf[DocInformationsDeserializer],
+    "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+    "value.deserializer" -> "kafka.DocInformationsDeserializer",
     "group.id" -> "something",
     "auto.offset.reset" -> "latest",
     "enable.auto.commit" -> (false: java.lang.Boolean)
   )
 
-
-
   val topics = Array("extraction")
-
   val kafkaStream = KafkaUtils.createDirectStream[String, (String, Metadata)](
     sc,
     LocationStrategies.PreferConsistent,
@@ -127,7 +111,7 @@ object Main extends App {
             .optionalStart().appendOffset("+HHMM", "+0000").optionalEnd()
             // offset (hh - "Z" when it's zero)
             .optionalStart().appendOffset("+HH", "Z").optionalEnd()
-            .toFormatter();
+            .toFormatter()
 
           val date = OffsetDateTime.parse(record._4, dateTimeFormatter)
           (date.getYear, 1)
