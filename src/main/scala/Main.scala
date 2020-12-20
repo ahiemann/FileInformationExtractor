@@ -67,7 +67,7 @@ object Main extends App {
     import spark.implicits._
 
     if (! rdd.isEmpty()) {
-      println("neue Daten")
+      println("New data received")
 
       val df = rdd.toDF()
       df.createOrReplaceTempView("DocInformationDataFrame")
