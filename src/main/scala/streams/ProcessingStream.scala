@@ -47,6 +47,7 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
     val outputFilePath = Paths.get(s"$directoryPathOut/out.txt")
     d =>
       println("Write to file...")
+      if (! Files.exists(outputFilePath)) Files.createFile(outputFilePath)
       Files.writeString(outputFilePath, s"${d._1} ${d._2}", Charset.forName("UTF-8"), StandardOpenOption.APPEND)
       val recordMeta = new ProducerRecord[String, (String,Metadata)](producer.TOPIC, producer.KEY, d)
       println("Sending...")

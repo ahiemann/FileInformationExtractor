@@ -22,7 +22,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
     implicit val system: ActorSystem = ActorSystem("Sys")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-    val directoryIn = "./testdata"
+    val directoryIn = "./src/test/scala/streams/testfiles"
     val directoryOut = "./src/test/scala/streams/"
     val processingStream = new ProcessingStream(directoryIn, directoryOut)
 
@@ -34,11 +34,13 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
 
         Thread.sleep(5000)
 
-        val firstLine = Files.lines(Paths.get("./src/test/scala/streams/out.txt")).findFirst().get()
+        val filePath = Paths.get("./src/test/scala/streams/out.txt")
+        val firstLine = Files.lines(filePath).findFirst().get()
+        Files.delete(filePath)
 
         Thread.sleep(5000)
 
-        firstLine should startWith ("Hallo")
+        firstLine should startWith ("Hello World.")
       }
 
       "return a graph with Closed Shape and NotUsed" in {
