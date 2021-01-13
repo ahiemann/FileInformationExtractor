@@ -1,26 +1,16 @@
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, ClosedShape, javadsl}
-import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source}
-import kafka.DocInformationDeserializer
-import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
-import org.apache.kafka.clients.producer.KafkaProducer
-import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.serialization.StringDeserializer
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.RunnableGraph
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
-import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.tika.metadata.Metadata
-import streams.{Consumer, ProcessingStream}
+import streams.ProcessingStream
 
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
-import java.time.{Duration, LocalDateTime, OffsetDateTime}
-import java.util.{Collections, Properties}
-import scala.collection.JavaConverters.{asJavaCollection, iterableAsScalaIterableConverter, mapAsJavaMapConverter}
+import java.time.OffsetDateTime
 import scala.language.postfixOps
-
 
 object Main extends App {
   val directoryIn = "./testdata"
@@ -30,7 +20,7 @@ object Main extends App {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   val processingStream = new ProcessingStream(directoryIn, directoryOut)
-  val graph = processingStream.getGraph(directoryIn, directoryOut)
+  val graph = processingStream.getGraph
   RunnableGraph.fromGraph(graph).run()
 
   // Spark
@@ -82,9 +72,8 @@ object Main extends App {
       // TODO: Count of the most frequent words in extracted texts
       val wordCounts = rdd.map(record => {
         val words = record._1.split("[ \n]")
-        sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).collect()
+        sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).sortBy(_._2)//.top(3)//.collect()
       })
-      //wordCounts.foreach(f => f.foreach(println))
       wordCounts.foreach(list => list.foreach(println))
       val sorted = wordCounts.first().sortBy(_._2)
       println("Occurences of words in text")
@@ -128,9 +117,7 @@ object Main extends App {
       val docTypeCount = rdd.map(record => { (record._5, 1) }).reduceByKey((a, b) => { a + b })
       println("Stats about document types:")
       docTypeCount.foreach(println)
-
     }
-    //spark.stop()
   }
 
   sc.start()

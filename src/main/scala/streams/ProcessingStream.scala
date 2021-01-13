@@ -4,17 +4,13 @@ import akka.{Done, NotUsed}
 import akka.stream.{ClosedShape, Graph}
 import akka.stream.alpakka.file.scaladsl.Directory
 import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Sink, Source, Zip}
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
 
 import java.nio.charset.Charset
 import java.nio.file.{FileSystem, FileSystems, Files, Path, Paths, StandardOpenOption}
-import java.util.Properties
 import scala.concurrent.Future
-
-
-
 
 class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) {
   private val fs: FileSystem = FileSystems.getDefault
@@ -55,7 +51,7 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
   }
 
 
-  def getGraph(directoryPathIn: String, directoryPathOut: String): Graph[ClosedShape.type, NotUsed] = {
+  def getGraph: Graph[ClosedShape.type, NotUsed] = {
 
     GraphDSL.create() {
       implicit builder: GraphDSL.Builder[NotUsed] =>
@@ -73,7 +69,6 @@ class ProcessingStream(val directoryPathIn:String, val directoryPathOut:String) 
         val zipDocInfos = builder.add(Zip[String, Metadata])
 
         // sinks
-        val finalDestination = Sink.seq[(String, Metadata)]
         val writeSink = builder.add(fileSink)
 
         // Graph setup

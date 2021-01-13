@@ -9,7 +9,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import java.nio.file.{Files, Paths}
 import java.time.Duration
-import java.util.Properties
 
 import kafka.{DocInformationDeserializer, DocInformationSerializer}
 import net.manub.embeddedkafka.EmbeddedKafka
@@ -29,7 +28,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
     "The ProcessingStream" should {
       "extract text and metadata from files which placed in given directory" in {
 
-        val graph = processingStream.getGraph(directoryIn, directoryOut)
+        val graph = processingStream.getGraph
         RunnableGraph.fromGraph(graph).run()
 
         Thread.sleep(5000)
@@ -44,7 +43,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
       }
 
       "return a graph with Closed Shape and NotUsed" in {
-        val graph = processingStream.getGraph(directoryIn, directoryOut)
+        val graph = processingStream.getGraph
         RunnableGraph.fromGraph(graph).run()
 
         graph mustBe a [Graph[ClosedShape.type, NotUsed]]

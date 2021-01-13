@@ -1,7 +1,6 @@
 package kafka
 
 import java.io.{ByteArrayOutputStream, ObjectOutputStream}
-import java.nio.charset.StandardCharsets
 import java.util
 
 import org.apache.kafka.common.serialization.Serializer
