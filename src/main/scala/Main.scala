@@ -68,8 +68,6 @@ object Main extends App {
       val completeDataFrame = spark.sql("select * from DocInformationDataFrame")
       completeDataFrame.show()
 
-
-      // TODO: Count of the most frequent words in extracted texts
       val wordCounts = rdd.map(record => {
         val words = record._1.split("[ \n]")
         sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).sortBy(_._2)//.top(3)//.collect()
