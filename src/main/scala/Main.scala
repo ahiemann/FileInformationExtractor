@@ -44,7 +44,7 @@ object Main extends App {
     "value.deserializer" -> "kafka.DocInformationDeserializer",
     "group.id" -> "something",
     "auto.offset.reset" -> "latest",
-    "enable.auto.commit" -> (false: java.lang.Boolean)
+    "enable.auto.commit" -> (true: java.lang.Boolean)
   )
 
   val topics = Array("extraction")
@@ -87,15 +87,18 @@ object Main extends App {
       //wordCounts.foreach(f => f.foreach(println))
       wordCounts.foreach(list => list.foreach(println))
       val sorted = wordCounts.first().sortBy(_._2)
+      println
       println("Occurences of words in text")
       sorted.foreach(println)
 
 
       val docNameCount = rdd.map(record => { (record._2, 1) }).reduceByKey((a, b) => { a + b })
+      println
       println("Stats about document names:")
       docNameCount.foreach(println)
 
       val docAuthorCount = rdd.map(record => { (record._3, 1) }).reduceByKey((a, b) => { a + b })
+      println
       println("Stats about document authors:")
       docAuthorCount.foreach(println)
 
@@ -122,10 +125,12 @@ object Main extends App {
         }
       }
       ).reduceByKey((a, b) => { a + b })
+      println
       println("Stats about document creation years:")
       docYearCount.foreach(println)
 
       val docTypeCount = rdd.map(record => { (record._5, 1) }).reduceByKey((a, b) => { a + b })
+      println
       println("Stats about document types:")
       docTypeCount.foreach(println)
 
