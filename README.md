@@ -6,8 +6,8 @@ A Scala program that uses Apache Tika in conjunction with Alpakka and Akka strea
 from files in a (currently hardcoded) directory. Apache Kafka is used as a sink for these data.
 Then Apache Spark is used to create statistics about the extracted information. 
 
-This data could in the context of document archive system that allows to find a document
+This data could be used in the context of a document archive system that allows to find a document
 by searching for keywords or metadata of the document, e.g. using Elasticsearch in the backend.  
 
-The Apache Kafka instance has to be started anually using "docker-compose -f zk-single-kafka-single.yml up" 
+The Apache Kafka instance has to be started manually using "docker-compose -f zk-single-kafka-single.yml up" 
 in the "kafka" directory of the project. 
