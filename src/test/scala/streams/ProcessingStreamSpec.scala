@@ -46,7 +46,7 @@ class ProcessingStreamSpec extends AnyWordSpec with Matchers with EmbeddedKafka 
         val graph = processingStream.getGraph
         RunnableGraph.fromGraph(graph).run()
 
-        graph mustBe a [Graph[ClosedShape.type, NotUsed]]
+        graph mustBe a [Graph[_, _]]
       }
 
       "work with kafka" in {
