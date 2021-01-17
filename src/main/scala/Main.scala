@@ -70,7 +70,7 @@ object Main extends App {
 
       val wordCounts = rdd.map(record => {
         val words = record._1.split("[ \n]")
-        sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).sortBy(_._2)//.top(3)//.collect()
+        sc.sparkContext.parallelize(words.map(word => (word, 1))).reduceByKey(_ + _).collect()
       })
       wordCounts.foreach(list => list.foreach(println))
       val sorted = wordCounts.first().sortBy(_._2)
